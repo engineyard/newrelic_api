@@ -100,8 +100,8 @@ module NewRelicApi
 
 end
 
-require_relative 'new_relic_api/application'
-require_relative 'new_relic_api/application_host'
-require_relative 'new_relic_api/application_instance'
-require_relative 'new_relic_api/server'
-require_relative 'new_relic_api/user'
+require 'new_relic_api/application'
+require 'new_relic_api/application_host'
+require 'new_relic_api/application_instance'
+require 'new_relic_api/server'
+require 'new_relic_api/user'
