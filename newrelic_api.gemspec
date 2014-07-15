@@ -24,13 +24,10 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
-    "lib/active_resource_associations.rb",
-    "lib/new_relic_api.rb",
-    "lib/newrelic_api.rb",
     "newrelic_api.gemspec",
     "test/integration/newrelic_api_test.rb",
     "test/test_helper.rb"
-  ]
+  ] + Dir.glob('lib/**/*')
   s.homepage = "http://www.github.com/newrelic/newrelic_api"
   s.licenses = ["MIT"]
   s.rdoc_options = ["--line-numbers", "--title", "Documentation and helper code for the New Relic API", "-m", "README.rdoc"]
