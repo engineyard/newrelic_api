@@ -50,11 +50,6 @@ module NewRelicApi
         NewRelicApi.track_resource(klass)
       end
 
-      def headers
-        raise "api_key required" unless NewRelicApi.api_key
-        {'X-Api-Key' => NewRelicApi.api_key}
-      end
-
       def site_url
         host = NewRelicApi.host || 'api.newrelic.com'
         port = NewRelicApi.port || 443
@@ -68,6 +63,68 @@ module NewRelicApi
       def proxy
         NewRelicApi.proxy
       end
+
+      def find(*arguments, api_key)
+        scope   = arguments.slice!(0)
+        options = arguments.slice!(0) || {}
+        api_key ||= NewRelicApi.api_key
+
+        case scope
+          when :all   then find_every(options, api_key)
+          when :first then find_every(options, api_key).first
+          when :last  then find_every(options, api_key).last
+          when :one   then find_one(options, api_key)
+          else             find_single(scope, options, api_key)
+        end
+      end
+
+      def find_every(options, api_key)
+        request_headers = authorize_headers(api_key)
+        begin
+          case from = options[:from]
+          when Symbol
+            instantiate_collection(get(from, options[:params]), options[:params])
+          when String
+            path = "#{from}#{query_string(options[:params])}"
+            instantiate_collection(format.decode(connection.get(path, request_headers).body) || [], options[:params])
+          else
+            prefix_options, query_options = split_options(options[:params])
+            path = collection_path(prefix_options, query_options)
+            instantiate_collection( (format.decode(connection.get(path, request_headers).body) || []), query_options, prefix_options )
+          end
+        rescue ActiveResource::ResourceNotFound
+          # Swallowing ResourceNotFound exceptions and return [] - as per
+          # ActiveRecord.
+          []
+        end
+      end
+
+      def find_one(options, api_key)
+        request_headers = authorize_headers(api_key)
+        case from = options[:from]
+        when Symbol
+          instantiate_record(get(from, options[:params]))
+        when String
+          path = "#{from}#{query_string(options[:params])}"
+          instantiate_record(format.decode(connection.get(path, request_headers).body))
+        end
+      end
+
+      def find_single(scope, options, api_key)
+        request_headers = authorize_headers(api_key)
+        prefix_options, query_options = split_options(options[:params])
+        path = element_path(scope, prefix_options, query_options)
+        instantiate_record(format.decode(connection.get(path, request_headers).body), prefix_options)
+      end
+
+      protected
+
+      def authorize_headers(api_key)
+        new_headers = headers.dup
+        new_headers['X-Api-Key'] = api_key
+        new_headers
+      end
+
     end
 
     self.format = :json
