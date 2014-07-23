@@ -16,18 +16,7 @@ Gem::Specification.new do |s|
     "CHANGELOG",
     "README.rdoc"
   ]
-  s.files = [
-    "CHANGELOG",
-    "Gemfile",
-    "Gemfile.lock",
-    "LICENSE.txt",
-    "README.rdoc",
-    "Rakefile",
-    "VERSION",
-    "newrelic_api.gemspec",
-    "test/integration/newrelic_api_test.rb",
-    "test/test_helper.rb"
-  ] + Dir.glob('lib/**/*')
+  s.files = `git ls-files`.split("\n")
   s.homepage = "http://www.github.com/newrelic/newrelic_api"
   s.licenses = ["MIT"]
   s.rdoc_options = ["--line-numbers", "--title", "Documentation and helper code for the New Relic API", "-m", "README.rdoc"]
