@@ -142,6 +142,20 @@ module NewRelicApi
   #
   class Account < BaseResource
   end
+
+  class JsonApiFormatter
+    include ActiveResource::Formats::JsonFormat
+
+    def initialize(resource_name)
+      @resource_name = resource_name
+    end
+
+    def decode(json)
+      data = ActiveResource::Formats::JsonFormat.decode(json)
+      data[@resource_name] || data
+    end
+  end
+
 end
 
 require 'new_relic_api/application'

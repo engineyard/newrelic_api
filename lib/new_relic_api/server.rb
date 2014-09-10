@@ -8,4 +8,5 @@ end
 
 class NewRelicApi::Server < NewRelicApi::BaseResource
   self.collection_parser = NewRelicApi::ServerCollection
+  self.format = NewRelicApi::JsonApiFormatter.new('server')
 end
