@@ -64,10 +64,10 @@ module NewRelicApi
         NewRelicApi.proxy
       end
 
-      def find(*arguments, api_key)
-        scope   = arguments.slice!(0)
+      def find(*arguments)
+        api_key = arguments.last.is_a?(String) ? arguments.last : NewRelicApi.api_key
+        scope = arguments.slice!(0)
         options = arguments.slice!(0) || {}
-        api_key ||= NewRelicApi.api_key
 
         case scope
           when :all   then find_every(options, api_key)
